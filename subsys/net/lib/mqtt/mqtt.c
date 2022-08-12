@@ -215,6 +215,21 @@ int mqtt_connect(struct mqtt_client *client)
 		goto error;
 	}
 
+	struct mqtt_utf8 pass, user_name;
+
+#ifdef CONFIG_MQTT_USERNAME
+	user_name.size = strlen(CONFIG_MQTT_USERNAME);
+	user_name.utf8 = CONFIG_MQTT_USERNAME;
+	client -> user_name = &user_name;
+#endif
+
+#ifdef CONFIG_MQTT_PASSWD
+	pass.size = strlen(CONFIG_MQTT_PASSWD);
+	pass.utf8 = CONFIG_MQTT_PASSWD;
+	client -> password = &pass;
+#endif
+
+
 	err_code = client_connect(client);
 
 error:
@@ -226,6 +241,7 @@ error:
 
 	return err_code;
 }
+
 
 static int verify_tx_state(const struct mqtt_client *client)
 {
